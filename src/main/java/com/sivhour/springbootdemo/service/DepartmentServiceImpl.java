@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.sivhour.springbootdemo.entity.Department;
@@ -26,17 +29,22 @@ public class DepartmentServiceImpl implements DepartmentService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "department", key = "#departmentId")
 	public Department fetchDepartmentById(Long departmentId) {
+		System.out.println("called fetchDepartmentById() -----------");
 		return departmentRepository.findById(departmentId).get();
 	}
 
+
 	@Override
+	@CacheEvict(cacheNames = "department", key = "#departmentId")
 	public void deleteDepartmentById(Long departmentId) {
 		departmentRepository.deleteById(departmentId);
 		
 	}
 
 	@Override
+	@CachePut(cacheNames = "department", key = "#departmentId")
 	public Department updateDepartment(Long departmentId, Department department) {
 		Department depDB = departmentRepository.findById(departmentId).get();
 		
@@ -58,7 +66,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 	}
 
 	@Override
+	@Cacheable(cacheNames = "department", key = "#departmentName")
 	public Department fetchDepartmentByName(String departmentName) {
+		System.out.println("called fetchDepartmentByName() -------");
 		return departmentRepository.findByDepartmentName(departmentName);
 	}
 	
